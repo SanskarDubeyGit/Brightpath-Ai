@@ -4,16 +4,17 @@
 
 @layer base {
   :root {
-    --brand-dark: 4 48 43;
-    --brand-lime: 182 240 107;
-    --brand-cream: 247 246 238;
-    --brand-forest: 11 91 73;
-    --brand-dark-hover: 3 38 35;
+    --brand-dark: #04302B;
+    --brand-dark-hover: #032623;
+    --brand-lime: #B6F06B;
+    --brand-lime-dark: #9FD95A;
+    --brand-cream: #F7F6EE;
+    --brand-forest: #0B5B49;
   }
 
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 90px; /* offset for sticky header */
+    scroll-padding-top: 100px; /* offset for sticky header + announcement strip */
   }
 
   body {
@@ -29,6 +30,23 @@
     @apply font-heading text-brand-dark;
   }
 
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
   .section {
     @apply py-20 lg:py-28;
   }
@@ -39,6 +57,23 @@
 }
 
 @layer components {
+  /* Announcement strip */
+  .announcement {
+    @apply bg-brand-dark text-brand-lime text-xs font-medium tracking-wide;
+  }
+
+  .announcement-pulse {
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .announcement-pulse {
+      animation: none;
+      opacity: 1;
+    }
+  }
+
+  /* Glass card */
   .glass-card {
     @apply bg-white rounded-3xl border border-brand-cream/50 shadow-sm transition-all duration-300;
   }
@@ -47,12 +82,16 @@
     @apply shadow-xl shadow-brand-dark/10 border-brand-lime/30;
   }
 
+  /* Glass input */
   .glass-input {
     @apply bg-brand-cream border border-brand-forest/20 rounded-xl px-4 py-3 text-brand-dark placeholder-brand-dark/40 focus:border-brand-lime focus:outline-none focus:ring-1 focus:ring-brand-lime transition-all duration-200;
+    min-height: 48px; /* 44px+ tap target */
+    font-size: 1rem; /* 16px minimum */
   }
 
+  /* Buttons */
   .btn-primary {
-    @apply bg-brand-lime text-brand-dark px-6 py-3 rounded-full text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2;
+    @apply bg-brand-lime text-brand-dark px-6 py-3 rounded-full text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 min-w-[44px] min-h-[44px];
   }
 
   .btn-primary:hover {
@@ -64,28 +103,57 @@
   }
 
   .btn-outline {
-    @apply border border-brand-dark/20 bg-transparent text-brand-dark px-6 py-3 rounded-full text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2;
+    @apply border border-brand-dark/20 bg-transparent text-brand-dark px-6 py-3 rounded-full text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 min-w-[44px] min-h-[44px];
   }
 
   .btn-outline:hover {
     @apply bg-brand-dark/5 border-brand-dark;
   }
 
+  /* Nav link */
   .nav-link {
-    @apply text-brand-dark/70 text-sm font-medium transition-colors duration-200 px-3 py-2 rounded-lg;
+    @apply text-brand-dark/70 text-sm font-medium transition-colors duration-200 px-3 py-2 rounded-lg min-w-[44px] min-h-[44px] flex items-center;
   }
 
   .nav-link:hover, .nav-link.active {
     @apply text-brand-lime bg-brand-dark/5;
   }
 
+  /* Badge */
   .badge-rating {
     @apply bg-brand-lime text-brand-dark px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1;
+  }
+
+  /* Section headings */
+  .section-head {
+    @apply text-center mb-16;
+  }
+
+  .section-head .badge {
+    @apply inline-block mb-4;
+  }
+
+  .section-head h2 {
+    @apply text-3xl font-heading font-bold mb-4;
+  }
+
+  .section-head p {
+    @apply text-brand-dark/60 max-w-2xl mx-auto text-lg;
   }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }

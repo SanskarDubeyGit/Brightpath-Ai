@@ -9,7 +9,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Brand colors — edit in one place
+        // Brand colours — edit in one place
         brand: {
           dark: '#04302B',      // Deep forest green
           darkHover: '#032623', // Slightly darker
@@ -18,10 +18,7 @@ module.exports = {
           cream: '#F7F6EE',     // Light section background
           creamDark: '#ECEBDD', // Slightly darker cream
           forest: '#0B5B49',    // Mid forest green for borders/text
-        },
-        neutral: {
-          dark: '#0F172A',      // Slate-900 fallback
-          light: '#F8FAFC',     // Slate-50 fallback
+          forestLight: 'rgba(11, 91, 73, 0.1)',
         },
       },
       fontFamily: {
@@ -29,28 +26,18 @@ module.exports = {
         heading: ['var(--font-plus-jakarta)', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
-        'xl': '0.75rem',
+        xl: '0.75rem',
         '2xl': '1rem',
         '3xl': '1.5rem',
-        'full': '9999px',
+        full: '9999px',
       },
       animation: {
-        'fade-in': 'fadeIn 400ms ease-out',
-        'slide-up': 'slideUp 500ms cubic-bezier(0.16, 1, 0.3, 1)',
-        'pill-hover': 'pillHover 200ms ease-out',
+        'pulse-glow': 'pulse-glow 3s ease-in-out infinite',
       },
       keyframes: {
-        fadeIn: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
-        },
-        slideUp: {
-          '0%': { transform: 'translateY(20px)', opacity: '0' },
-          '100%': { transform: 'translateY(0)', opacity: '1' },
-        },
-        pillHover: {
-          '0%': { transform: 'scale(1)' },
-          '100%': { transform: 'scale(1.05)' },
+        'pulse-glow': {
+          '0%, 100%': { opacity: '0.6', boxShadow: '0 0 0 0 rgba(182, 240, 107, 0.4)' },
+          '50%': { opacity: '1', boxShadow: '0 0 0 8px rgba(182, 240, 107, 0)' },
         },
       },
     },

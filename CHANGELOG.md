@@ -8,7 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Monorepo folder structure initialized (`apps/web`, `apps/api`, `packages/ui`, `docs/`)
+- Frontend redesign: green theme (lime `#B6F06B`, forest `#04302B`, cream `#F7F6EE`)
+- Announcement strip with pulse animation (respects prefers-reduced-motion)
+- Fixed navigation: working section links, smooth scroll, active highlighting, YouTube target=_blank
+- Team section with initials avatars and LinkedIn links
+- Contact section with mailto/tel links (brightpathai@gmail.com, +1999999999)
+- SVG illustrations (no external image dependencies)
+- Team data config (`apps/web/src/lib/team.ts`)
+- Copy updated for USA, Europe, Asia Pacific markets
+- Mobile-first responsive design (360px–1024px+), 44px tap targets, 16px min font
 - Next.js 14 frontend with Tailwind CSS, App Router, TypeScript
 - Spring Boot 3 backend with Java 21, Maven
 - PostgreSQL 16 database schema with Flyway migrations
