@@ -1,0 +1,53 @@
+  # ECS Auto Scaling Target
+  ECSAutoScalingTarget:
+    Type: AWS::ApplicationAutoScaling::ScalableTarget
+    Properties:
+      ServiceNamespace: ecs
+      ResourceId: !Join ['', ['service/', !Ref ECSCluster, '/', !Ref ECSApiService]]
+      ScalableDimension: ecs:service:DesiredCount
+      MinCapacity: 2
+      MaxCapacity: 10
+      RoleARN: !GetAtt ECSAutoScalingRole.Arn
+
+  # Auto Scaling Policy: CPU-based
+  ECSCpuScalingPolicy:
+    Type: AWS::ApplicationAutoScaling::ScalingPolicy
+    Properties:
+      PolicyName: brightpath-api-cpu-scaling
+      PolicyType: TargetTrackingScaling
+      ScalingTargetId: !Ref ECSAutoScalingTarget
+      TargetTrackingScalingPolicyConfiguration:
+        PredefinedMetricSpecification:
+          PredefinedMetricType: ECSServiceAverageCPUUtilization
+        TargetValue: 70.0
+        ScaleOutCooldown: 60
+        ScaleInCooldown: 300
+
+  # Auto Scaling Policy: Memory-based
+  ECSCMemoryScalingPolicy:
+    Type: AWS::ApplicationAutoScaling::ScalingPolicy
+    Properties:
+      PolicyName: brightpath-api-memory-scaling
+      PolicyType: TargetTrackingScaling
+      ScalingTargetId: !Ref ECSAutoScalingTarget
+      TargetTrackingScalingPolicyConfiguration:
+        PredefinedMetricSpecification:
+          PredefinedMetricType: ECSServiceAverageMemoryUtilization
+        TargetValue: 80.0
+        ScaleOutCooldown: 60
+        ScaleInCooldown: 300
+
+  # Auto Scaling IAM Role
+  ECSAutoScalingRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: brightpath-ecs-autoscaling-role
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: application-autoscaling.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/ApplicationAutoScalingForECSAccess

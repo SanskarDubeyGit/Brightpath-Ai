@@ -1,0 +1,106 @@
+# CloudFront CDN for static assets and API (supplementary to infrastructure.yaml)
+# Add these resources to the main infrastructure.yaml stack
+
+Parameters:
+  CloudFrontOriginSecret:
+    Type: String
+    Description: Secret header value for origin verification
+  VercelDomain:
+    Type: String
+    Description: Vercel deployment domain (e.g., brightpath.vercel.app)
+
+Resources:
+  # Read Replica for RDS PostgreSQL
+  ReadReplica:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceIdentifier: brightpath-db-replica
+      DBInstanceClass: db.t3.micro
+      Engine: postgres
+      EngineVersion: '16'
+      SourceDBInstanceIdentifier: !Ref Database
+      AllocatedStorage: 20
+      MaxAllocatedStorage: 100
+      PubliclyAccessible: false
+      BackupRetentionPeriod: 0
+      MultiAZ: false
+      StorageEncrypted: true
+      Tags:
+        - Key: Name
+          Value: brightpath-db-replica
+
+  # CloudFront CDN Distribution
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - Id: brightpath-api-origin
+            DomainName: !GetAtt ApiLoadBalancer.DNSName
+            CustomOriginConfig:
+              OriginProtocolPolicy: http-only
+              HTTPPort: 80
+              HTTPSPort: 443
+              OriginSSLProtocols:
+                - TLSv1.2
+            CustomHeaders:
+              - HeaderName: X-Origin-Verify
+                HeaderValue: !Ref CloudFrontOriginSecret
+          - Id: brightpath-web-origin
+            DomainName: !Ref VercelDomain
+            CustomOriginConfig:
+              OriginProtocolPolicy: https-only
+              OriginSSLProtocols:
+                - TLSv1.3
+        DefaultCacheBehavior:
+          TargetOriginId: brightpath-api-origin
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods:
+            - GET
+            - HEAD
+            - OPTIONS
+          CachedMethods:
+            - GET
+            - HEAD
+          ForwardedValues:
+            QueryString: true
+            Headers:
+              - Authorization
+              - Accept-Language
+            Cookies:
+              Forward: none
+          Compress: true
+          MinTTL: 0
+          DefaultTTL: 300
+          MaxTTL: 3600
+        CacheBehaviors:
+          - PathPattern: /api/v1/cms/*
+            TargetOriginId: brightpath-api-origin
+            ViewerProtocolPolicy: redirect-to-https
+            AllowedMethods:
+              - GET
+              - HEAD
+              - OPTIONS
+            CachedMethods:
+              - GET
+              - HEAD
+            ForwardedValues:
+              QueryString: true
+              Headers:
+                - Accept-Language
+              Cookies:
+                Forward: none
+            Compress: true
+            MinTTL: 60
+            DefaultTTL: 3600
+            MaxTTL: 86400
+        Enabled: true
+        PriceClass: PriceClass_All
+        Comments: "brightpath IT Consulting Platform CDN"
+
+Outputs:
+  CloudFrontDomain:
+    Description: CloudFront distribution domain name
+    Value: !GetAtt CloudFrontDistribution.DomainName
+    Export:
+      Name: brightpathCloudFrontDomain

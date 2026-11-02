@@ -1,0 +1,80 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Testing
+coverage
+
+# Next.js
+.next/
+out/
+build
+
+# Production
+dist
+
+# Misc
+.DS_Store
+*.pem
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Vercel
+.vercel
+
+# Netlify
+.netlify
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# IDE
+.idea
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# VS Code installation artifacts (working directory is VS Code install folder)
+2c33b50b16/
+bin/
+Code.exe
+Code.VisualElementsManifest.xml
+unins000.dat
+unins000.exe
+unins000.msg
+
+# Logs
+logs
+*.log
+
+# Turbo
+.turbo
+
+# Backend
+apps/api/target/
+apps/api/.mvn/wrapper/maven-wrapper.jar
+!apps/api/.mvn/wrapper/maven-wrapper.properties
+
+# Docker
+docker-compose.override.yml
+
+# Generated
+*.generated.ts
+*.generated.java

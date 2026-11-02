@@ -1,0 +1,77 @@
+# PostHog Feature Flag Configuration
+# A/B Testing: Booking Form Layout Experiment
+
+{
+  "flags": {
+    "booking_form_layout": {
+      "key": "booking_form_layout",
+      "name": "Booking Form Layout",
+      "description": "A/B test: single-step vs multi-step booking form",
+      "created_at": "2026-11-02T00:00:00Z",
+      "filters": {
+        "groups": [
+          {
+            "conditions": [
+              {
+                "key": "$feature_flag",
+                "operator": "is_not",
+                "value": "booking_form_layout"
+              }
+            ]
+          }
+        ]
+      },
+      "rollout": {
+        "percentage": 50,
+        "unit": "user"
+      },
+      "variants": {
+        "control": {
+          "key": "control",
+          "name": "Single Step",
+          "description": "All fields on one page (control group)",
+          "payload": null,
+          "percentage": 50
+        },
+        "treatment": {
+          "key": "treatment",
+          "name": "Multi Step",
+          "description": "Fields split across 3 steps with progress indicator",
+          "payload": null,
+          "percentage": 50
+        }
+      }
+    }
+  },
+
+  "metrics": {
+    "booking_form_conversion": {
+      "key": "booking_form_conversion",
+      "name": "Booking Form Conversion",
+      "description": "Percentage of users who complete the booking form",
+      "event": "booking_form_conversion",
+      "filters": {}
+    },
+    "booking_form_completion_time": {
+      "key": "booking_form_completion_time",
+      "name": "Form Completion Time",
+      "description": "Average time to complete the booking form",
+      "event": "booking_form_interaction",
+      "filters": {}
+    }
+  },
+
+  "experiments": {
+    "booking_form_ab_test": {
+      "key": "booking_form_ab_test",
+      "name": "Booking Form A/B Test",
+      "description": "Test single-step vs multi-step booking form for conversion rate",
+      "status": "active",
+      "start_date": "2026-11-02T00:00:00Z",
+      "feature_flag": "booking_form_layout",
+      "metrics": ["booking_form_conversion", "booking_form_completion_time"],
+      "sample_rate": 1.0,
+      "filter": {}
+    }
+  }
+}

@@ -1,0 +1,5 @@
+# Crontab entry for daily database backup
+# Run at 2 AM UTC every day
+# Retention: 30 days
+
+0 2 * * * /path/to/scripts/backup-database.sh >> /var/log/agency/backup.log 2>&1
