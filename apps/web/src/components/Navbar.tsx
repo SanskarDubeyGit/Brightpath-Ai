@@ -2,106 +2,218 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
-import { Menu, X, Logo, Rocket, Zap, Code2, Users, Mail, BookOpen } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { useState, useEffect, useRef } from 'react';
+import { Menu, X, Mail, Linkedin, PlaySquare, Phone, ChevronRight } from 'lucide-react';
 
 const navLinks = [
-  { name: 'Home', href: '/' },
-  { name: 'Services', href: '/services' },
-  { name: 'Case Studies', href: '/case-studies' },
-  { name: 'About', href: '/about' },
-  { name: 'Contact', href: '/contact' },
+  { name: 'Home', href: '#home' },
+  { name: 'About', href: '#about' },
+  { name: 'Services', href: '#services' },
+  { name: 'Case Studies', href: '#case-studies' },
+  { name: 'Contact', href: '#contact' },
+];
+
+const socialLinks = [
+  { name: 'YouTube', href: 'https://youtube.com/@brightpathai', icon: PlaySquare, external: true },
+  { name: 'LinkedIn', href: 'https://linkedin.com/company/brightpath-ai', icon: Linkedin, external: true },
 ];
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState('#home');
+  const navRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const observerOptions = {
+      root: null,
+      rootMargin: '-120px 0% -60% 0%',
+      threshold: 0,
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('id');
+          if (id) {
+            setActiveSection('#' + id);
+          }
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('section[id]').forEach((el) => {
+      observer.observe(el);
+    });
+
+    return () => observer.disconnect();
   }, []);
 
+  const handleNavClick = (href: string, external: boolean = false) => {
+    if (external) {
+      window.open(href, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    setIsOpen(false);
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
-    <nav
-      className={cn(
-        'fixed top-0 w-full z-50 transition-all duration-300',
-        scrolled ? 'bg-slate-900/80 backdrop-blur-md border-b border-white/5' : 'bg-transparent'
-      )}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center text-white shadow-lg shadow-sky-500/30">
-              <Rocket size={24} />
-            </div>
-            <Link href="/" className="text-xl font-bold tracking-tight text-white">
-              Brightpath Ai
-            </Link>
+    <>
+      {/* Top bar */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-brand-dark text-white px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto flex justify-between items-center h-7">
+          <div className="flex items-center gap-4 text-xs font-medium">
+            <span className="flex items-center gap-1">
+              <Mail size={12} />
+              <a href="mailto:[YOUR EMAIL]" className="hover:text-brand-lime transition-colors">
+                [YOUR EMAIL]
+              </a>
+            </span>
+            <span className="flex items-center gap-1">
+              <Phone size={12} />
+              <a href="tel:[YOUR PHONE NUMBER]" className="hover:text-brand-lime transition-colors">
+                [YOUR PHONE NUMBER]
+              </a>
+            </span>
           </div>
-
-          <div className="hidden md:flex items-center space-x-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className="text-sm font-medium text-slate-300 hover:text-white transition-colors"
+          <div className="flex items-center gap-3">
+            {socialLinks.map((s) => (
+              <a
+                key={s.name}
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs hover:text-brand-lime transition-colors flex items-center gap-1"
               >
-                {link.name}
-              </Link>
+                <s.icon size={12} />
+                {s.name}
+              </a>
             ))}
-            <Link href="/book" className="ml-4">
-              <button className="btn-primary">Book a Consultation</button>
-            </Link>
-          </div>
-
-          <div className="md:hidden flex items-center gap-2">
-            <button
-              onClick={() => setIsOpen(true)}
-              className="text-slate-300 hover:text-white"
-              aria-label="Open menu"
-            >
-              <Menu />
-            </button>
           </div>
         </div>
       </div>
 
-      {isOpen && (
-        <div className="fixed inset-0 z-40 bg-slate-900/95 backdrop-blur-sm">
-          <div className="flex items-center justify-between px-6 py-4 border-b border-white/5">
-            <Link href="/" className="text-xl font-bold tracking-tight text-white">
-              Brightpath Ai
-            </Link>
-            <button
-              onClick={() => setIsOpen(false)}
-              className="text-slate-300 hover:text-white"
-              aria-label="Close menu"
-            >
-              <X />
-            </button>
-          </div>
-          <div className="px-6 py-8 space-y-6">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                onClick={() => setIsOpen(false)}
-                className="text-lg font-medium text-slate-300 hover:text-white transition-colors block"
+      {/* Main navbar */}
+      <nav
+        ref={navRef}
+        className={`sticky top-[7px] z-40 bg-white/95 backdrop-blur-md border-b border-brand-cream/50 transition-all duration-300 ${
+          isOpen ? 'bg-white' : ''
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-2">
+              <div className="w-9 h-9 rounded-2xl bg-brand-lime flex items-center justify-center text-brand-dark shadow-lg shadow-brand-lime/25">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <Link href="#home" className="text-xl font-heading font-bold tracking-tight text-brand-dark">
+                Brightpath Ai
+              </Link>
+            </div>
+
+            <div className="hidden md:flex items-center space-x-1">
+              {navLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavClick(link.href);
+                  }}
+                  className={`nav-link ${activeSection === link.href ? 'active' : ''}`}
+                  aria-current={activeSection === link.href ? 'page' : undefined}
+                >
+                  {link.name}
+                </a>
+              ))}
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Button variant="outline" size="sm" asChild>
+                <Link href="#book">Book a Consultation</Link>
+              </Button>
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="md:hidden p-2 rounded-xl text-brand-dark hover:bg-brand-dark/5 transition-colors"
+                aria-label="Open menu"
               >
-                {link.name}
-              </Link>
-            ))}
-            <div className="pt-4">
-              <Link href="/book">
-                <button className="btn-primary w-full">Book a Consultation</button>
-              </Link>
+                {isOpen ? <X size={20} /> : <Menu size={20} />}
+              </button>
             </div>
           </div>
         </div>
-      )}
-    </nav>
+
+        {/* Mobile menu */}
+        {isOpen && (
+          <div className="md:hidden bg-white border-b border-brand-cream/50">
+            <div className="px-4 py-4 space-y-3">
+              {navLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavClick(link.href);
+                  }}
+                  className={`block px-4 py-3 rounded-xl text-brand-dark font-medium transition-colors ${
+                    activeSection === link.href ? 'bg-brand-dark/5 text-brand-lime' : ''
+                  }`}
+                >
+                  {link.name}
+                </a>
+              ))}
+              <div className="pt-4 border-t border-brand-cream/50">
+                <a
+                  href="#book"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavClick('#book');
+                  }}
+                  className="block px-4 py-3 text-center rounded-xl bg-brand-lime text-brand-dark font-semibold hover:bg-brand-limeDark transition-colors"
+                >
+                  Book a Consultation
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
+      </nav>
+    </>
   );
 }
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'outline';
+  size?: 'sm' | 'md' | 'lg';
+  asChild?: boolean;
+}
+
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant = 'primary', size = 'md', asChild = false, ...props }, ref) => {
+    const Comp = asChild ? React.Fragment : 'button';
+    const base = 'inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-lime focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
+    const variants = {
+      primary: 'bg-brand-lime text-brand-dark hover:bg-brand-limeDark hover:scale-105 active:scale-95',
+      outline: 'border border-brand-dark/20 bg-transparent text-brand-dark hover:bg-brand-dark/5',
+    };
+    const sizes = {
+      sm: 'px-3 py-1.5 text-xs',
+      md: 'px-6 py-3 text-sm',
+      lg: 'px-8 py-4 text-base',
+    };
+
+    return (
+      <Comp
+        ref={ref}
+        className={`${base} ${variants[variant]} ${sizes[size]} ${className}`}
+        {...props}
+      />
+    );
+  }
+);
+Button.displayName = 'Button';

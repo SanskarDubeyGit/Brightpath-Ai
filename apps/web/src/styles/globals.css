@@ -4,87 +4,88 @@
 
 @layer base {
   :root {
-    --bg-primary: 15 23 42;
-    --bg-secondary: 30 41 59;
-    --bg-tertiary: 51 65 85;
-    --surface-glass: rgba(255, 255, 255, 0.03);
-    --surface-glass-border: rgba(255, 255, 255, 0.08);
-    --brand-primary: 14 165 233;
-    --brand-secondary: 8 145 178;
-    --brand-dark: 3 105 161;
-    --text-primary: 248 250 252;
-    --text-secondary: 203 213 225;
-    --text-muted: 148 163 184;
-    --success: 16 185 129;
-    --warning: 245 158 11;
-    --error: 239 68 68;
-    --radius: 0.75rem;
-  }
-
-  .dark {
-    --bg-primary: 15 23 42;
-    --bg-secondary: 30 41 59;
-    --bg-tertiary: 51 65 85;
+    --brand-dark: 4 48 43;
+    --brand-lime: 182 240 107;
+    --brand-cream: 247 246 238;
+    --brand-forest: 11 91 73;
+    --brand-dark-hover: 3 38 35;
   }
 
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 90px; /* offset for sticky header */
   }
 
   body {
-    @apply bg-slate-900 text-slate-50 antialiased;
+    @apply bg-white text-brand-dark antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
   ::selection {
-    @apply bg-sky-500/30 text-slate-50;
+    @apply bg-brand-lime/30 text-brand-dark;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading text-brand-dark;
+  }
+
+  .section {
+    @apply py-20 lg:py-28;
+  }
+
+  .page-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 }
 
 @layer components {
   .glass-card {
-    @apply bg-surface-glass border border-surface-glass-border rounded-lg backdrop-blur-xs transition-all duration-200 ease-out;
+    @apply bg-white rounded-3xl border border-brand-cream/50 shadow-sm transition-all duration-300;
   }
 
   .glass-card:hover {
-    @apply bg-white/5 border-white/10 -translate-y-1 shadow-xl shadow-slate-900/50;
+    @apply shadow-xl shadow-brand-dark/10 border-brand-lime/30;
   }
 
   .glass-input {
-    @apply bg-slate-800/60 border border-slate-700 rounded-md px-3 py-2 text-slate-50 placeholder-slate-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 transition-all duration-200;
-  }
-
-  .glass-btn {
-    @apply bg-surface-glass border border-surface-glass-border text-slate-50 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-white/5 hover:border-white/10 active:scale-95;
+    @apply bg-brand-cream border border-brand-forest/20 rounded-xl px-4 py-3 text-brand-dark placeholder-brand-dark/40 focus:border-brand-lime focus:outline-none focus:ring-1 focus:ring-brand-lime transition-all duration-200;
   }
 
   .btn-primary {
-    @apply bg-sky-500 border-transparent text-slate-900 px-4 py-2.5 rounded-md text-sm font-semibold transition-all duration-200 hover:bg-sky-400 hover:shadow-lg hover:shadow-sky-500/30 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply bg-brand-lime text-brand-dark px-6 py-3 rounded-full text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2;
   }
 
-  .btn-secondary {
-    @apply bg-surface-glass border border-surface-glass-border text-slate-50 px-4 py-2.5 rounded-md text-sm font-medium transition-all duration-200 hover:bg-white/5 hover:border-white/10 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+  .btn-primary:hover {
+    @apply bg-brand-limeDark transform scale-105 shadow-lg shadow-brand-lime/25;
   }
 
-  .page-container {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12;
+  .btn-primary:active {
+    @apply scale-95;
   }
 
-  .section {
-    @apply py-16 lg:py-24;
+  .btn-outline {
+    @apply border border-brand-dark/20 bg-transparent text-brand-dark px-6 py-3 rounded-full text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2;
+  }
+
+  .btn-outline:hover {
+    @apply bg-brand-dark/5 border-brand-dark;
+  }
+
+  .nav-link {
+    @apply text-brand-dark/70 text-sm font-medium transition-colors duration-200 px-3 py-2 rounded-lg;
+  }
+
+  .nav-link:hover, .nav-link.active {
+    @apply text-brand-lime bg-brand-dark/5;
+  }
+
+  .badge-rating {
+    @apply bg-brand-lime text-brand-dark px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1;
   }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
-  }
-
-  .glass-border {
-    border: 1px solid rgba(255, 255, 255, 0.08);
-  }
-
-  .text-shadow {
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
 }
